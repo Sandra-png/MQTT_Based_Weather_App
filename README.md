@@ -19,7 +19,7 @@ This project simulates a weather sensor using Python and publishes mock weather 
 
 ## How to Replicate
 
-### 🔹 Clone the Repo
+### Clone the Repo
 
 ```bash
 git clone https://github.com/your-username/weather-mqtt-client.git
