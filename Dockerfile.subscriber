@@ -1,0 +1,9 @@
+FROM python:3.10.12
+WORKDIR /app
+
+RUN apt-get update && \
+    apt-get install -y sqlite3 && \
+    pip install --no-cache-dir paho-mqtt
+
+COPY subscriber.py mqtt_config.py ./
+CMD ["python", "-u", "subscriber.py"]

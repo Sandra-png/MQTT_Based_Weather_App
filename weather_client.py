@@ -1,29 +1,16 @@
-# Author: Sandra
-# Description: An IoT client that simulates weather sensor data and publishes it to an MQTT broker
 # This project demonstrates MQTT communication using Python.
+# The weather_client.py generates randomized weather data every 60 seconds, and publishes it to a public MQTT broker
 
-
-# All imports
+# -- IMPORTS --
 from paho.mqtt import client as mqtt_client
+from mqtt_config import broker_address, broker_port, topic, publish_interval, generate_client_id
 import json
 import random
 import time
 import traceback
 
 print ("Weather MQTT Client starting...")
-
-# -- CONFIGURATION --
-broker_address = "broker.emqx.io" # Public test broker
-
-# This is the default port for MQTT over plain TCP, with no encryption
-broker_port = 1883
-
-# Other variables
-topic = "python/mqtt"
-publish_interval = 60 # in seconds
-
 print (f"MQTT Broker Configured at: {broker_address}:{broker_port}\n")
-
 
 # -- CLIENT SETUP --
 def on_connect (client, userdata, flags, rc, properties = None):
@@ -32,19 +19,19 @@ def on_connect (client, userdata, flags, rc, properties = None):
     else:
         print (f"Failed to connect, return code {rc}\n")
 
-# Generate a unique client ID
-client_id = f"weather-client-{random.randint (0, 1000)}"
-
-# Generating a unique client ID
-client = mqtt_client.Client (mqtt_client.CallbackAPIVersion.VERSION2, client_id)
+client = mqtt_client.Client (mqtt_client.CallbackAPIVersion.VERSION2, generate_client_id ("weather-client"))
 client.on_connect = on_connect
 
 print ("MQTT Client Initialized. \n")
 
+# -- MAIN LOOP --
 try:
     # Connecting to the MQTT broker
-    client.connect (broker_address, 1883)
+    client.connect (broker_address, broker_port)
     client.loop_start() # Starting the network loop in the background
+
+    # Slight delay so subscriber can connect before the first message gets sent
+    time.sleep (5)
 
     # Continuous loop to publish data according to the publish interval
     while True:
@@ -57,17 +44,17 @@ try:
         wind_direction = random.choice (["North", "East", "West", "South"])
 
         weather_data = {
-            "Time: ": int (time.time()),
-            "Weather Conditions: ": weather_condition,
-            "Temperature: ": temperature,
-            "Wind Speed: ": wind_speed,
-            "Wind Direction: ": wind_direction,
+            "timestamp": int(time.time()),
+            "condition": weather_condition,
+            "temperature": temperature,
+            "wind_speed": wind_speed,
+            "wind_direction": wind_direction,
         }
         
         print ("Publishing Weather:\n", weather_data)
 
 
-        # Turning weather_data to a JSON string
+        # Turning weather_data to a JSON string, to publish it to the client
         result = client.publish (topic, json.dumps(weather_data))
         status = result [0]
 
@@ -76,7 +63,7 @@ try:
         else:
             print (f"\nFailed to send message to topic '{topic}'")
 
-        # Wait-time before next publication, mostly for testing purposes
+        # Wait-time before next publication
         time.sleep (publish_interval)
 
 except Exception as e:
