@@ -60,4 +60,5 @@ Message sent to topic 'python/mqtt'
 ```
 
 ## Output on the Flask-Web Application
-<img width="657" alt="bilde" src="https://github.com/user-attachments/assets/2799ba68-22b9-41c4-a43e-02750494c871" />
+<img width="651" alt="bilde" src="https://github.com/user-attachments/assets/eeda37f8-fb50-444e-b754-78bcb198d8fa" />
+
