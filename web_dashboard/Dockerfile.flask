@@ -1,0 +1,9 @@
+FROM python:3.10.12
+WORKDIR /app
+
+RUN pip install --no-cache-dir flask
+
+COPY web_dashboard/flask_app.py /app/
+COPY mqtt_config /app/mqtt_config
+
+CMD ["python", "-u", "flask_app.py"]

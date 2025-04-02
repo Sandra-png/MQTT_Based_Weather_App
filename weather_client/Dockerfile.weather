@@ -1,0 +1,9 @@
+FROM python:3.10.12
+WORKDIR /app
+
+RUN pip install --no-cache-dir paho-mqtt
+
+COPY weather_client/weather_client.py /app/
+COPY mqtt_config /app/mqtt_config
+
+CMD ["python", "-u", "weather_client.py"]

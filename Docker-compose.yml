@@ -1,0 +1,37 @@
+services:
+  weather-client:
+    build:
+      context: .
+      dockerfile: weather_client/Dockerfile.weather
+
+  subscriber:
+    build:
+      context: .
+      dockerfile: subscriber/Dockerfile.subscriber
+    volumes:
+      - weather-data:/app/data
+    healthcheck:
+      test: ["CMD", "sqlite3", "/app/data/weather.db 'SELECT count(*) FROM weather;'"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
+  web-dashboard:
+    build:
+      context: .
+      dockerfile: web_dashboard/Dockerfile.flask
+    ports:
+      - "5050:5000"
+    volumes:
+      - weather-data:/app/data
+    depends_on:
+      subscriber:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5000"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
+volumes:
+  weather-data:
