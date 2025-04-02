@@ -19,7 +19,7 @@ This project simulates a weather sensor using Python and publishes mock weather 
 ---
 
 # Project Structure
-
+```
 ├── README.md
 ├── docker-compose.yml
 ├── data/                   # Persistent SQLite database storage
@@ -35,6 +35,7 @@ This project simulates a weather sensor using Python and publishes mock weather 
 └── web_dashboard/
     ├── Dockerfile.flask
     └── flask_app.py        # Displays weather data via web
+```
 
 ## Setup Instructions
 
